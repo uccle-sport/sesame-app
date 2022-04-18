@@ -108,12 +108,12 @@ export const apiRtk = createApi({
                 return guard([], () => ping(secret, deviceUuid, phoneUuid))
             }
         }),
-        rights: build.query<{ canLock: boolean }|undefined, void>({
+        rights: build.query<{ canLock: boolean, confirmed: boolean }|undefined, void>({
             async queryFn(arg, { getState }) {
                 const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
-                return guard([], () => new Promise<{canLock: boolean}>((resolve, reject) => {
+                return guard([], () => new Promise<{canLock: boolean, confirmed: boolean}>((resolve, reject) => {
                     if (!socket) { reject('no connection'); return }
-                    socket.emit('rights', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: { status: number, response: { canLock: boolean } }) => {
+                    socket.emit('rights', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: { status: number, response: { canLock: boolean, confirmed: boolean } }) => {
                         console.log(JSON.stringify(resp, null, ' '));
                         if (resp.status === 200) {
                             resolve(resp.response)

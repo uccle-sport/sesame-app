@@ -2,16 +2,18 @@ import React, {useEffect} from 'react';
 import './App.css';
 import {useNavigate} from "react-router";
 import {useAppSelector} from "./redux/hooks";
+import {useRightsQuery} from "./redux/query";
 
 function Layout(props: {children: JSX.Element}) {
     const navigate = useNavigate()
 
-    const { phoneNumber, phoneUuid, secret, deviceUuid } = useAppSelector((state) => state.app)
+    const { phoneNumber, secret, deviceUuid } = useAppSelector((state) => state.app)
+    const { data: rights } = useRightsQuery()
 
     useEffect(() => {
         if (!secret || ! deviceUuid) {
             navigate('/noconfig')
-        } else if (!phoneNumber) {
+        } else if (!phoneNumber || (rights && !rights.confirmed)) {
             navigate('/settings')
         }
 

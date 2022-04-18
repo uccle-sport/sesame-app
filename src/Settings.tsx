@@ -51,7 +51,7 @@ function Settings() {
     return (
         <Layout>
             <div id="settings" className="bottom-0 left-0 w-screen flex flex-col h-full pt-2">
-                <div className="mx-8 text-sm text-justify" hidden={!!name && !!phoneNumber}>Please fill in the information below.<br /> Be sure to double check your phone number as it will be used to send your validation code.</div>
+                <div className="mx-8 text-sm text-justify" hidden={!!phoneNumber && (!rights || rights.confirmed)}>Please fill in the information below.<br /> Be sure to double check your phone number as it will be used to send your validation code.</div>
                 <form className="flex dlex-auto mt-4 px-8 flex-col w-full">
                     <div className="relative flex w-full flex-wrap items-stretch mb-3">
                         <input id="name" name="name" type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}
