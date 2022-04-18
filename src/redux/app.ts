@@ -12,8 +12,8 @@ const phoneUuid = params?.get('phone_uuid') ?? localStorage.getItem('sesame.phon
 
 secret && localStorage.setItem('sesame.secret', secret)
 deviceUuid && localStorage.setItem('sesame.device.uuid', deviceUuid)
-name && localStorage.setItem('name', name)
-phoneNumber && localStorage.setItem('phoneNumber', phoneNumber)
+name && localStorage.setItem('sesame.name', name)
+phoneNumber && localStorage.setItem('sesame.phone.number', phoneNumber)
 localStorage.setItem('sesame.phone.uuid', phoneUuid)
 
 export interface AppState {

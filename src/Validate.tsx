@@ -29,8 +29,8 @@ function Validate() {
   return (
       <Layout>
       <div id="validation"
-           className="bottom-0 left-0 w-screen pt-4 flex flex-col h-full">
-          <div className="mx-8 text-sm text-justify">Please enter the validation code you have received by SMS</div>
+           className="bottom-0 left-0 w-screen flex flex-col h-full">
+          <div className="px-9 mt-8 text-justify">Please enter the validation code you have received by SMS</div>
           <form className="flex dlex-auto mt-8 px-8 flex-col w-full">
               <div className="relative flex w-full flex-wrap items-stretch mb-3">
                   <input id="code" name="code" type="text" style={codeIncorrect?{borderColor: 'darkred', borderWidth: '2px'}:{}} placeholder="Validation code" value={code} onChange={(e) => setCode(e.target.value)}

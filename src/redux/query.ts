@@ -108,6 +108,22 @@ export const apiRtk = createApi({
                 return guard([], () => ping(secret, deviceUuid, phoneUuid))
             }
         }),
+        rights: build.query<{ canLock: boolean }|undefined, void>({
+            async queryFn(arg, { getState }) {
+                const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
+                return guard([], () => new Promise<{canLock: boolean}>((resolve, reject) => {
+                    if (!socket) { reject('no connection'); return }
+                    socket.emit('rights', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: { status: number, response: { canLock: boolean } }) => {
+                        console.log(JSON.stringify(resp, null, ' '));
+                        if (resp.status === 200) {
+                            resolve(resp.response)
+                        } else {
+                            reject(resp)
+                        }
+                    })
+                }))
+            }
+        }),
         open: build.mutation<boolean|undefined, void>({
             async queryFn(arg, { getState }) {
                 const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
@@ -169,7 +185,7 @@ export const apiRtk = createApi({
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify({uuid: deviceUuid, pid: phoneUuid, name, 'g-recaptcha-response': UUID ,from: phoneNumber.replace(/[^+0-9]/g,'')})}).then((r) => {
+                                body: JSON.stringify({deviceUuid, pid: phoneUuid, name, 'g-recaptcha-response': UUID ,from: phoneNumber.replace(/[^+0-9]/g,'')})}).then((r) => {
                                 if (r.status === 200) {
                                     resolve(true)
                                 } else {
@@ -191,4 +207,4 @@ export const apiRtk = createApi({
     }),
 })
 
-export const { useOpenMutation, useCloseMutation, useRegisterMutation, useCompleteProcessMutation, usePingQuery } = apiRtk
+export const { useOpenMutation, useCloseMutation, useRegisterMutation, useCompleteProcessMutation, usePingQuery, useRightsQuery, useKeepOpenMutation } = apiRtk

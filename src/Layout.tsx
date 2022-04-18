@@ -18,8 +18,8 @@ function Layout(props: {children: JSX.Element}) {
     }, [phoneNumber, secret, deviceUuid] )
 
   return (
-<div className="flex flex-col bg-pink-200 h-screen">
-    <div className="flex flex-wrap items-center justify-between px-2 py-3 bg-pink-500 mb-3">
+<div className="flex flex-col bg-white h-screen">
+    <div className="flex flex-wrap items-center justify-between px-2 py-3 bg-primary">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
             <div className="flex justify-between w-auto px-4">
                 <button
@@ -37,7 +37,7 @@ function Layout(props: {children: JSX.Element}) {
             </div>
         </div>
     </div>
-    <div className="flex-auto overflow-hidden">{props.children}</div>
+    <div className="flex-auto overflow-hidden text-info">{props.children}</div>
 </div>
   );
 }

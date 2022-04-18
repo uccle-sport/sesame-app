@@ -1,20 +1,31 @@
 import React, {useEffect, useState} from 'react';
+import QRCode from "react-qr-code";
+
 import './App.css';
 import Layout from "./Layout";
 import {useAppDispatch, useAppSelector} from "./redux/hooks";
-import {useRegisterMutation} from "./redux/query";
-import { v4 as uuid } from 'uuid'
+import {useRegisterMutation, useRightsQuery} from "./redux/query";
+import {v4 as uuid} from 'uuid'
 import {registrationProcessWaitingForValidation, startRegistrationProcess} from "./redux/app";
 import {useNavigate} from "react-router";
+
 function Settings() {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const { name: nameFromState, phoneNumber, mustSendRegistration, registrationRequestId } = useAppSelector((state) => state.app)
-
+    const { name: nameFromState, phoneNumber, mustSendRegistration, registrationRequestId, deviceUuid, secret } = useAppSelector((state) => state.app)
+    const { data: rights } = useRightsQuery()
+    const [ delay, setDelay ] = useState(0)
+    const [ openUntil, setOpenUntil ] = useState(new Date())
     const [ phone, setPhone ] = useState(phoneNumber)
     const [ name, setName ] = useState(nameFromState)
     const [ phoneMissing, setPhoneMissing ] = useState(false)
     const [ register, { data: registration }] = useRegisterMutation()
+
+    const twoDigits = (n:number) => n<10?'0'+n:''+n
+
+    useEffect(() => {
+        setOpenUntil(new Date(+new Date() + delay * 60 * 1000))
+    }, [delay])
 
     const submit = () => {
         const isPhoneOk = phone && phone.length > 6 && phone.match(/\+?[0-9 .-/]+/)
@@ -39,10 +50,9 @@ function Settings() {
 
     return (
         <Layout>
-            <div id="settings"
-                 className="bottom-0 left-0 w-screen pt-4 flex flex-col h-full">
+            <div id="settings" className="bottom-0 left-0 w-screen flex flex-col h-full pt-2">
                 <div className="mx-8 text-sm text-justify" hidden={!!name && !!phoneNumber}>Please fill in the information below.<br /> Be sure to double check your phone number as it will be used to send your validation code.</div>
-                <form className="flex dlex-auto mt-8 px-8 flex-col w-full">
+                <form className="flex dlex-auto mt-4 px-8 flex-col w-full">
                     <div className="relative flex w-full flex-wrap items-stretch mb-3">
                         <input id="name" name="name" type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}
                                className="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:ring w-full pr-10"/>
@@ -80,10 +90,27 @@ function Settings() {
 </svg></span>
                         <span className="pt-0.5" id="button-label">Submit</span>
                     </button>
-                    <div className="self-center py-16">
-                        <canvas id="qr" className="w-48 h-48"/>
-                    </div>
                 </form>
+                <h1 hidden={!rights || !rights.canLock} className="px-9 py-4 mt-8 mb-4 bg-primary-content">Advanced</h1>
+                <div hidden={!rights || !rights.canLock}>
+                    <div className="mx-8 flex flex-nowrap items-center">
+                        <label className="label cursor-pointer">
+                            <input type="checkbox" checked={!!delay} className="checkbox checkbox-primary"
+                                   onChange={(e) => setDelay(e.target.checked ? 5 : 0)}/>
+                            <span
+                                className="nowrap grow-2 mr-2 text-sm whitespace-nowrap pl-2">Keep shed open until </span>
+                        </label>
+                        <input hidden={!delay} type="range" min="1" max="120" value={delay}
+                               onChange={(e) => setDelay(parseInt(e.target.value))}
+                               className="flex-auto range range-primary"/>
+                        <div hidden={!delay}
+                             className="nowrap grow-2 text-sm whitespace-nowrap ml-2">{twoDigits(openUntil.getHours()) + ':' + twoDigits(openUntil.getMinutes())}</div>
+                    </div>
+                </div>
+                <h1 className="px-9 py-4 mt-4 mb-4 bg-primary-content">Share access</h1>
+                <div className="self-center h-full pt-4">
+                    <QRCode size={200} value={window.location.href.replace(/(https?:\/\/.+?)\/.*/, "$1")+`?uuid=${deviceUuid}&secret=${secret}`} />
+                </div>
             </div>
         </Layout>
     );

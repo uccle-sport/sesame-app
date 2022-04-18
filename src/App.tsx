@@ -48,15 +48,15 @@ function App() {
     return (
         <Layout>
             <div id="main" className="flex flex-col h-full justify-center bg-white">
-                <div className="w-full mt-8 flex-1 text-center bg" style={{backgroundImage: `url(${background})`, backgroundSize: "contain", backgroundRepeat: 'no-repeat', backgroundPosition: 'center bottom'}} ><span className="text-lg">Welcome to Sésame<br/>The bike shed remote control.</span>
+                <div className="w-full mt-4 flex-1 text-center bg" style={{backgroundImage: `url(${background})`, backgroundSize: "contain", backgroundRepeat: 'no-repeat', backgroundPosition: 'center bottom'}} ><span className="text-lg">Welcome to Sésame<br/>The bike shed remote control.</span>
                 </div>
-                <div id="status" className="mx-auto py-4 grow-1 text-center my-2">{message}</div>
+                <div id="status" className="mx-auto grow-1 text-center mt-2">{message}</div>
                 <div className="relative pt-1 px-16 grow-1 py-4 my-2">
-                    <div className="overflow-hidden h-4 mb-4 text-xs flex rounded bg-pink-200">
+                    <div className="overflow-hidden h-5 mb-4 text-xs flex rounded-lg bg-pink-200">
                         <div id="progress" style={{width: (!pingData?'100%':progress)}} className={`${!pingData?'indeterminate ':''}shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-500`}/>
                     </div>
                 </div>
-                <div className="mx-auto grow-1 mb-8">
+                <div className="mx-auto grow-1 mb-24">
                     <button id="button"
                             className={
                         `flex flex-nowrap justify-center w-48 text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 ${open || closed ? 'bg-pink-500 active:bg-pink-600 hover:shadow-lg' : 'bg-pink-200'}`}
