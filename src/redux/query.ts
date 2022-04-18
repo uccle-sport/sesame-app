@@ -1,9 +1,12 @@
 import { io, Socket } from "socket.io-client";
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import {AppState, cancelRegistrationProcess} from "./app";
+import {AppState, cancelRegistrationProcess, setAppStatus} from "./app";
+import {AppDispatch} from "./store";
 
-const socket: Socket = window.location.href.includes('localhost') ? io('http://localhost:5000') : io()
+let socket: Socket | undefined = undefined
+let socketFingerPrint: string = undefined
+
 const MESSAGE_HOST = "https://msg-gw.icure.cloud"
 const PROCESS_ID = "91c91afa-565c-4773-bb9d-93b925bb3ee7"
 const UUID = 'a58afe0e-02dc-431b-8155-0351140099e4';
@@ -25,6 +28,67 @@ const guard = async <T>(guardedInputs: unknown[], lambda: () => Promise<T>): Pro
     }
 }
 
+function ping(secret: string, deviceUuid: string, phoneUuid: string): Promise<{
+    connected: boolean,
+    lastEvent: number | undefined,
+    opening: boolean,
+    closing: boolean,
+    open: boolean,
+    closed: boolean
+}> {
+    return new Promise((resolve, reject) => {
+        if (!socket) {
+            reject('no connection');
+            return
+        }
+        socket.emit('ping', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: any) => {
+            console.log(JSON.stringify(resp, null, ' '));
+            if (resp.status === 200) {
+                const r = resp.response
+                const ev = (r.events && r.events.length && r.events[r.events.length - 1] || undefined) as { date: string } | undefined
+                resolve({
+                    connected: true,
+                    lastEvent: +(ev?.date ?? 0),
+                    opening: r.opening ?? false,
+                    closing: r.closing ?? false,
+                    open: r.open ?? false,
+                    closed: r.closed ?? false
+                })
+            } else {
+                reject(resp)
+            }
+        })
+    });
+}
+
+export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch) => {
+    if (uuid && token && pid && socketFingerPrint !== `${uuid}:${pid}:${token}`) {
+        socketFingerPrint = `${uuid}:${pid}:${token}`
+        socket = window.location.href.includes('localhost') ? io('http://localhost:5000', {
+            query: {
+                uuid,
+                pid,
+                token
+            }
+        }) : io({query: {uuid, pid, token}})
+        if (socket) {
+            socket.on('notify', (msg) => {
+                dispatch(setAppStatus(msg))
+            })
+            const thisSocket = socket
+            const refreshStatus = () => {
+                ping(token, uuid, pid).then((res) => {
+                    dispatch(setAppStatus(res))
+                })
+                if (thisSocket === socket) {
+                    setTimeout(() => refreshStatus(), 60000)
+                }
+            }
+            refreshStatus()
+        }
+    }
+}
+
 export const apiRtk = createApi({
     reducerPath: 'api',
     tagTypes: ['Api'],
@@ -38,34 +102,17 @@ export const apiRtk = createApi({
                 responseHandler: 'text'
             })
         }),
-        ping: build.query<{ connected: boolean, lastEvent?: string, opening: boolean, closing: boolean, closed: boolean, open: boolean }|undefined, void>({
+        ping: build.query<{ connected: boolean, lastEvent?: number, opening: boolean, closing: boolean, closed: boolean, open: boolean }|undefined, void>({
             async queryFn(arg, { getState }) {
                 const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
-                return guard([], () => new Promise((resolve, reject) => {
-                    socket.emit('ping', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: any) => {
-                        console.log(JSON.stringify(resp, null, ' '));
-                        if (resp.status === 200) {
-                            const r = resp.response
-                            const ev = (r.events && r.events.length && r.events[r.events.length - 1] || undefined) as { date: string } | undefined
-                            resolve({
-                                connected: true,
-                                lastEvent: ev?.date,
-                                opening: r.opening,
-                                closing: r.closing,
-                                open: !r.closed && !r.opening && !r.closing,
-                                closed: r.closed
-                            })
-                        } else {
-                            reject(resp)
-                        }
-                    })
-                }))
+                return guard([], () => ping(secret, deviceUuid, phoneUuid))
             }
         }),
         open: build.mutation<boolean|undefined, void>({
             async queryFn(arg, { getState }) {
                 const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
                 return guard([], () => new Promise((resolve, reject) => {
+                    if (!socket) { reject('no connection'); return }
                     socket.emit('open', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: any) => {
                         console.log(JSON.stringify(resp, null, ' '));
                         if (resp.status === 200) {
@@ -81,6 +128,7 @@ export const apiRtk = createApi({
             async queryFn(arg, { getState }) {
                 const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
                 return guard([], () => new Promise((resolve, reject) => {
+                    if (!socket) { reject('no connection'); return }
                     socket.emit('close', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: any) => {
                         console.log(JSON.stringify(resp, null, ' '));
                         if (resp.status === 200) {
@@ -96,6 +144,7 @@ export const apiRtk = createApi({
             async queryFn(arg, { getState }) {
                 const { secret, deviceUuid, phoneUuid } = (getState() as { app: AppState }).app
                 return guard([], () => new Promise((resolve, reject) => {
+                    if (!socket) { reject('no connection'); return }
                     socket.emit('keepOpen', {token: secret, uuid: deviceUuid, pid: phoneUuid}, (resp: any) => {
                         console.log(JSON.stringify(resp, null, ' '));
                         if (resp.status === 200) {
@@ -111,6 +160,7 @@ export const apiRtk = createApi({
             async queryFn(requestId, { getState, dispatch }) {
                 const { secret, deviceUuid, phoneUuid, phoneNumber, name } = (getState() as { app: AppState }).app
                 return guard([], () => new Promise((resolve, reject) => {
+                    if (!socket) { reject('no connection'); return }
                     socket.emit('registerPid', {token: secret, uuid: deviceUuid, pid: phoneUuid, phone: phoneNumber, name}, (resp: any) => {
                         console.log(JSON.stringify(resp, null, ' '));
                         if (resp.status === 200) {

@@ -4,9 +4,10 @@ import Layout from "./Layout";
 // @ts-ignore
 import background from "./img/bg.jpeg";
 import {useCloseMutation, useOpenMutation, usePingQuery} from "./redux/query";
+import {useAppSelector} from "./redux/hooks";
 
 function App() {
-    const { data: pingData } = usePingQuery(undefined, { pollingInterval: 2000 })
+    const pingData = useAppSelector((state) => state.app.status)
     const [ dynProgress, setDynProgress ] = useState(0)
     const { open, closed, closing, opening } = (pingData ?? { open: false, closed: false, closing: false, opening: false })
     const [ openDoor ] = useOpenMutation()
@@ -57,8 +58,9 @@ function App() {
                 </div>
                 <div className="mx-auto grow-1 mb-8">
                     <button id="button"
-                            className="flex flex-nowrap justify-center w-48 bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button" onClick={() => toggle()}>
+                            className={
+                        `flex flex-nowrap justify-center w-48 text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 ${open || closed ? 'bg-pink-500 active:bg-pink-600 hover:shadow-lg' : 'bg-pink-200'}`}
+                            type="button" disabled={!open && !closed} onClick={() => toggle()}>
 			<span className="mr-4 my-auto"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"
                                                 width="1em"
                                                 height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path

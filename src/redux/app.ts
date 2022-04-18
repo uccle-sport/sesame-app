@@ -1,6 +1,6 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import { createSlice, PayloadAction} from '@reduxjs/toolkit'
 import { v4 as uuid } from 'uuid'
-import {io, Socket} from "socket.io-client";
+import {connect} from "./query";
 
 const params: URLSearchParams | undefined = new URLSearchParams(window.location.href.split("?")[1])
 
@@ -25,9 +25,19 @@ export interface AppState {
     registrationRequestId?: string
     waitingForValidation: boolean
     mustSendRegistration: boolean
+    status: { open: boolean, closed: boolean, closing: boolean, opening: boolean }
 }
 
-const initialState = { name, phoneNumber, phoneUuid, secret, deviceUuid, waitingForValidation: false } as AppState
+const initialState = {
+    name,
+    phoneNumber,
+    phoneUuid,
+    secret,
+    deviceUuid,
+    waitingForValidation: false,
+    status: {open: false, closed: false, closing: false, opening: false}
+} as AppState
+
 export const app = createSlice({
     name: 'app',
     initialState,
@@ -48,9 +58,11 @@ export const app = createSlice({
         cancelRegistrationProcess: (state) => {
             state.registrationRequestId = undefined
             state.waitingForValidation = false
+        },
+        setAppStatus(state, { payload: { open, closed, closing, opening } }: PayloadAction<{open: boolean, closed: boolean, closing: boolean, opening: boolean }>) {
+            state.status = { open, closed, closing, opening }
         }
-
     }
 })
 
-export const { startRegistrationProcess, cancelRegistrationProcess, registrationProcessWaitingForValidation } = app.actions
+export const { startRegistrationProcess, cancelRegistrationProcess, registrationProcessWaitingForValidation, setAppStatus } = app.actions

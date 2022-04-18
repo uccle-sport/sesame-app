@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import Layout from "./Layout";
 import {useNavigate} from "react-router";
-import {useAppSelector} from "./redux/hooks";
-import {useCompleteProcessMutation, useRegisterMutation} from "./redux/query";
+import { useAppSelector} from "./redux/hooks";
+import {useCompleteProcessMutation } from "./redux/query";
 
 function Validate() {
     const navigate = useNavigate()
@@ -23,7 +23,7 @@ function Validate() {
 
     useEffect(() => {
         if (validation === 'ok') {
-
+            navigate('/')
         }
     }, [validation])
   return (
