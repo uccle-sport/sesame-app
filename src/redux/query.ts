@@ -6,6 +6,7 @@ import {AppState, cancelRegistrationProcess} from "./app";
 const socket: Socket = window.location.href.includes('localhost') ? io('http://localhost:5000') : io()
 const MESSAGE_HOST = "https://msg-gw.icure.cloud"
 const PROCESS_ID = "91c91afa-565c-4773-bb9d-93b925bb3ee7"
+const UUID = 'a58afe0e-02dc-431b-8155-0351140099e4';
 
 function getError(e: FetchBaseQueryError): FetchBaseQueryError & { message?: string } {
     const err = e as any
@@ -118,7 +119,7 @@ export const apiRtk = createApi({
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify({uuid: deviceUuid, pid: phoneUuid, name, 'g-recaptcha-response': 'a58afe0e-02dc-431b-8155-0351140099e4' ,from: phoneNumber.replace(/[^+0-9]/g,'')})}).then((r) => {
+                                body: JSON.stringify({uuid: deviceUuid, pid: phoneUuid, name, 'g-recaptcha-response': UUID ,from: phoneNumber.replace(/[^+0-9]/g,'')})}).then((r) => {
                                 if (r.status === 200) {
                                     resolve(true)
                                 } else {
