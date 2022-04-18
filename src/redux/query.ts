@@ -64,6 +64,7 @@ function ping(secret: string, deviceUuid: string, phoneUuid: string): Promise<{
 export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch) => {
     if (uuid && token && pid && socketFingerPrint !== `${uuid}:${pid}:${token}`) {
         socketFingerPrint = `${uuid}:${pid}:${token}`
+        socket && socket.disconnect()
         socket = window.location.href.includes('localhost') ? io('http://localhost:5000', {
             query: {
                 uuid,
