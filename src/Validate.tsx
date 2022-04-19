@@ -27,7 +27,7 @@ function Validate() {
 
     useEffect(() => {
         if (validation === 'ok') {
-            navigate('/')
+            navigate(`/${deviceUuid}/${secret}`)
             ping(deviceUuid, deviceUuid, phoneUuid).then((res) => {
                 dispatch(setAppStatus(res))
             })

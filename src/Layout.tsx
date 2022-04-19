@@ -25,7 +25,7 @@ function Layout(props: {children: JSX.Element}) {
             <div className="flex justify-between w-auto px-4">
                 <button
                     className="text-md font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
-                    onClick={() => navigate('/')}>
+                    onClick={() => navigate(`/${deviceUuid}/${secret}`)}>
                     Sésame
                 </button>
             </div>
