@@ -3,7 +3,7 @@ import './App.css';
 import Layout from "./Layout";
 import { useNavigate } from "react-router";
 import {useAppDispatch, useAppSelector} from "./redux/hooks";
-import {ping, useCompleteProcessMutation} from "./redux/query";
+import {connect, ping, useCompleteProcessMutation} from "./redux/query";
 import { arrowCircleLeft,checkCircle,key } from "./icons"
 import {setAppStatus} from "./redux/app";
 
@@ -28,9 +28,7 @@ function Validate() {
     useEffect(() => {
         if (validation === 'ok') {
             navigate(`/${deviceUuid}/${secret}`)
-            ping(deviceUuid, deviceUuid, phoneUuid).then((res) => {
-                dispatch(setAppStatus(res))
-            })
+            connect(deviceUuid, secret, phoneUuid, dispatch, true)
         }
     }, [validation])
   return (

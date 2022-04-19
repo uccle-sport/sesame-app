@@ -61,10 +61,10 @@ export const ping = (secret: string, deviceUuid: string, phoneUuid: string): Pro
     });
 }
 
-export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch) => {
-    if (uuid && token && pid && socketFingerPrint !== `${uuid}:${pid}:${token}`) {
+export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch, force: boolean = false) => {
+    if (uuid && token && pid && (force || socketFingerPrint !== `${uuid}:${pid}:${token}`)) {
         socketFingerPrint = `${uuid}:${pid}:${token}`
-        socket && socket.disconnect()
+        if (!!socket) { socket.disconnect() }
         socket = window.location.href.includes('localhost') ? io('http://localhost:5000', {
             query: {
                 uuid,
@@ -92,7 +92,7 @@ export const connect = (uuid: string, token: string, pid: string, dispatch: AppD
 
 export const apiRtk = createApi({
     reducerPath: 'api',
-    tagTypes: ['Api'],
+    tagTypes: ['Right'],
     baseQuery: fetchBaseQuery({
         baseUrl: `${MESSAGE_HOST}/rus`
     }),
@@ -123,7 +123,8 @@ export const apiRtk = createApi({
                         }
                     })
                 }))
-            }
+            },
+            providesTags: () => ([{ type: 'Right', id: 'any' }])
         }),
         open: build.mutation<boolean|undefined, void>({
             async queryFn(arg, { getState }) {
@@ -203,7 +204,8 @@ export const apiRtk = createApi({
                         }
                     })
                 }))
-            }
+            },
+            invalidatesTags: [{ type: 'Right', id: 'any' }]
         }),
         register: build.mutation<boolean|undefined, void>({
             async queryFn(arg, { getState, dispatch }) {
@@ -220,7 +222,8 @@ export const apiRtk = createApi({
                         }
                     })
                 }))
-            }
+            },
+            invalidatesTags: [{ type: 'Right', id: 'any' }]
         }),
     }),
 
