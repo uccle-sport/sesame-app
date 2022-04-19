@@ -30,6 +30,7 @@ root.render(
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<App/>}/>
+                    <Route path="/:deviceUuid/:secret" element={<App/>}/>
                     <Route path="/settings" element={<Settings/>}/>
                     <Route path="/validate" element={<Validate/>}/>
                     <Route path="/noconfig" element={<NoConfig/>}/>

@@ -112,7 +112,7 @@ function Settings() {
                 <h1 className="px-9 py-4 mt-4 mb-4 bg-primary-content">Share access</h1>
                 <div className="self-center h-full pt-4">
                     <QRCode size={200}
-                            value={window.location.href.replace(/(https?:\/\/.+?)\/.*/, "$1") + `?uuid=${deviceUuid}&secret=${secret}`}/>
+                            value={window.location.href.replace(/(https?:\/\/.+?)\/.*/, "$1") + `/${deviceUuid}/${secret}`}/>
                 </div>
             </div>
         </Layout>

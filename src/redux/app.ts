@@ -1,11 +1,17 @@
 import { createSlice, PayloadAction} from '@reduxjs/toolkit'
 import { v4 as uuid } from 'uuid'
-import {connect} from "./query";
 
 const params: URLSearchParams | undefined = new URLSearchParams(window.location.href.split("?")[1])
 
-const secret = params?.get('secret') ?? localStorage.getItem('sesame.secret')
-const deviceUuid = params?.get('uuid') ?? localStorage.getItem('sesame.device.uuid')
+const pathHasIds = window.location.href.match(/https?:\/\/.+?\/[a-fA-F0-9-]{36}\/.+/);
+const secretFromPath = pathHasIds ?
+    window.location.href.replace(/https?:\/\/.+?\/([a-fA-F0-9-]{36})\/(.+?)\/?/, '$2') : undefined
+
+const uuidFromPath = pathHasIds ?
+    window.location.href.replace(/https?:\/\/.+?\/([a-fA-F0-9-]{36})\/(.+?)\/?/, '$1') : undefined
+
+const secret = secretFromPath ?? params?.get('secret') ?? localStorage.getItem('sesame.secret')
+const deviceUuid = uuidFromPath ?? params?.get('uuid') ?? localStorage.getItem('sesame.device.uuid')
 const name = params?.get('name') ?? localStorage.getItem('sesame.name')
 const phoneNumber = params?.get('phoneNumber') ?? localStorage.getItem('sesame.phone.number')
 const phoneUuid = params?.get('phone_uuid') ?? localStorage.getItem('sesame.phone.uuid') ?? uuid()
