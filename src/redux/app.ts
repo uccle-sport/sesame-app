@@ -3,12 +3,9 @@ import { v4 as uuid } from 'uuid'
 
 const params: URLSearchParams | undefined = new URLSearchParams(window.location.href.split("?")[1])
 
-const pathHasIds = window.location.href.match(/https?:\/\/.+?\/[a-fA-F0-9-]{36}\/.+/);
-const secretFromPath = pathHasIds ?
-    window.location.href.replace(/https?:\/\/.+?\/([a-fA-F0-9-]{36})\/(.+?)\/?/, '$2') : undefined
-
-const uuidFromPath = pathHasIds ?
-    window.location.href.replace(/https?:\/\/.+?\/([a-fA-F0-9-]{36})\/(.+?)\/?/, '$1') : undefined
+const pathHasIds = window.location.href.match(/https?:\/\/.+?\/([a-fA-F0-9-]{36})\/(.+?)\/?$/);
+const secretFromPath = pathHasIds ? pathHasIds[2] : undefined
+const uuidFromPath = pathHasIds ? pathHasIds[1] : undefined
 
 const secret = secretFromPath ?? params?.get('secret') ?? localStorage.getItem('sesame.secret')
 const deviceUuid = uuidFromPath ?? params?.get('uuid') ?? localStorage.getItem('sesame.device.uuid')
