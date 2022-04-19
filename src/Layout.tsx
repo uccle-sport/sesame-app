@@ -7,13 +7,13 @@ import {useRightsQuery} from "./redux/query";
 function Layout(props: {children: JSX.Element}) {
     const navigate = useNavigate()
 
-    const { phoneNumber, secret, deviceUuid } = useAppSelector((state) => state.app)
+    const { phoneNumber, secret, deviceUuid, waitingForValidation } = useAppSelector((state) => state.app)
     const { data: rights } = useRightsQuery()
 
     useEffect(() => {
         if (!secret || ! deviceUuid) {
             navigate('/noconfig')
-        } else if (!phoneNumber || (rights && !rights.confirmed)) {
+        } else if (!phoneNumber || (rights && !rights.confirmed && !waitingForValidation)) {
             navigate('/settings')
         }
 
