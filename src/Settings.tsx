@@ -67,7 +67,7 @@ function Settings() {
                     code.
                 </div>
                 <div className="mx-8 text-sm text-justify"
-                     hidden={!!phoneNumber && (!rights || rights.confirmed)}>Your phone number has not been confirmed. Please double check the information below and press the validate button.
+                     hidden={!phoneNumber || (!rights || rights.confirmed)}>Your phone number has not been confirmed. Please double check the information below and press the validate button.
                 </div>
                 <form className="flex dlex-auto mt-4 px-8 flex-col w-full">
                     <div className="relative flex w-full flex-wrap items-stretch mb-3">
