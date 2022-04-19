@@ -56,7 +56,7 @@ function Settings() {
             dispatch(registrationProcessWaitingForValidation())
             navigate('/validate')
         }
-    }, [registration])
+    }, [validatedRegistration])
 
     return (
         <Layout>
@@ -89,7 +89,7 @@ function Settings() {
                     <button id="button" disabled={registrationIsLoading}
                             className="flex flex-nowrap mt-4 mb-1 mx-auto justify-center w-48 bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
                             type="button" onClick={() => submit()}>
-			<span className="mr-4 my-auto">{checkCircle()}</span>
+			            <span className="mr-4 my-auto">{checkCircle()}</span>
                         <span className="pt-0.5" id="button-label">{!phoneNumber?'Submit':(rights && !rights.confirmed)?'Validate':'Update'}</span>
                     </button>
                 </form>
