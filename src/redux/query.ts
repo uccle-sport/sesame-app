@@ -28,14 +28,14 @@ const guard = async <T>(guardedInputs: unknown[], lambda: () => Promise<T>): Pro
     }
 }
 
-function ping(secret: string, deviceUuid: string, phoneUuid: string): Promise<{
+export const ping = (secret: string, deviceUuid: string, phoneUuid: string): Promise<{
     connected: boolean,
     lastEvent: number | undefined,
     opening: boolean,
     closing: boolean,
     open: boolean,
     closed: boolean
-}> {
+}> => {
     return new Promise((resolve, reject) => {
         if (!socket) {
             reject('no connection');

@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import Layout from "./Layout";
-import {useNavigate} from "react-router";
-import { useAppSelector} from "./redux/hooks";
-import {useCompleteProcessMutation } from "./redux/query";
-import {arrowCircleLeft,checkCircle,key} from "./icons"
+import { useNavigate } from "react-router";
+import {useAppDispatch, useAppSelector} from "./redux/hooks";
+import {ping, useCompleteProcessMutation} from "./redux/query";
+import { arrowCircleLeft,checkCircle,key } from "./icons"
+import {setAppStatus} from "./redux/app";
 
 function Validate() {
     const navigate = useNavigate()
-    const { registrationRequestId } = useAppSelector((state) => state.app)
+    const dispatch = useAppDispatch()
+
+    const { registrationRequestId, deviceUuid, secret, phoneUuid } = useAppSelector((state) => state.app)
     const [ code, setCode ] = useState('')
     const [ codeIncorrect, setCodeIncorrect ] = useState(false)
 
@@ -25,6 +28,9 @@ function Validate() {
     useEffect(() => {
         if (validation === 'ok') {
             navigate('/')
+            ping(deviceUuid, deviceUuid, phoneUuid).then((res) => {
+                dispatch(setAppStatus(res))
+            })
         }
     }, [validation])
   return (

@@ -16,7 +16,6 @@ function Layout(props: {children: JSX.Element}) {
         } else if (!phoneNumber || (rights && !rights.confirmed && !waitingForValidation)) {
             navigate('/settings')
         }
-
     }, [phoneNumber, secret, deviceUuid] )
 
   return (
