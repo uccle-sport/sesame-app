@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import background from "./img/bg.jpeg";
 import {useCloseMutation, useOpenMutation, usePingQuery} from "./redux/query";
 import {useAppSelector} from "./redux/hooks";
+import {home} from "./icons"
 
 function App() {
     const pingData = useAppSelector((state) => state.app.status)
@@ -59,13 +60,9 @@ function App() {
                 <div className="mx-auto grow-1 mb-24">
                     <button id="button"
                             className={
-                        `flex flex-nowrap justify-center w-48 text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 ${open || closed ? 'bg-pink-500 active:bg-pink-600 hover:shadow-lg' : 'bg-pink-200'}`}
+                        `flex flex-nowrap justify-center items-center w-48 text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 ${open || closed ? 'bg-pink-500 active:bg-pink-600 hover:shadow-lg' : 'bg-pink-200'}`}
                             type="button" disabled={!open && !closed} onClick={() => toggle()}>
-			<span className="mr-4 my-auto"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img"
-                                                width="1em"
-                                                height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path
-                d="M16 9.226l-8-6.21l-8 6.21V6.694l8-6.21l8 6.21zM14 9v6h-4v-4H6v4H2V9l6-4.5z"
-                fill="currentColor"/></svg></span>
+			<span className="mr-4 my-auto">{home()}</span>
                         <span id="button-label">{buttonLabel}</span>
                     </button>
                 </div>

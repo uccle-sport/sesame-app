@@ -173,7 +173,7 @@ export const apiRtk = createApi({
                 }))
             }
         }),
-        register: build.mutation<boolean|undefined, string>({
+        registerAndValidate: build.mutation<boolean|undefined, string>({
             async queryFn(requestId, { getState, dispatch }) {
                 const { secret, deviceUuid, phoneUuid, phoneNumber, name } = (getState() as { app: AppState }).app
                 return guard([], () => new Promise((resolve, reject) => {
@@ -205,7 +205,25 @@ export const apiRtk = createApi({
                 }))
             }
         }),
+        register: build.mutation<boolean|undefined, void>({
+            async queryFn(arg, { getState, dispatch }) {
+                const { secret, deviceUuid, phoneUuid, phoneNumber, name } = (getState() as { app: AppState }).app
+                return guard([], () => new Promise((resolve, reject) => {
+                    if (!socket) { reject('no connection'); return }
+                    socket.emit('registerPid', {token: secret, uuid: deviceUuid, pid: phoneUuid, phone: phoneNumber, name}, (resp: any) => {
+                        console.log(JSON.stringify(resp, null, ' '));
+                        if (resp.status === 200) {
+                            resolve(true)
+                        } else {
+                            dispatch(cancelRegistrationProcess())
+                            reject(resp)
+                        }
+                    })
+                }))
+            }
+        }),
     }),
+
 })
 
-export const { useOpenMutation, useCloseMutation, useRegisterMutation, useCompleteProcessMutation, usePingQuery, useRightsQuery, useKeepOpenMutation } = apiRtk
+export const { useOpenMutation, useCloseMutation, useRegisterMutation, useRegisterAndValidateMutation, useCompleteProcessMutation, usePingQuery, useRightsQuery, useKeepOpenMutation } = apiRtk

@@ -51,6 +51,12 @@ export const app = createSlice({
             name && localStorage.setItem('sesame.name', name)
             phoneNumber && localStorage.setItem('sesame.phone.number', phoneNumber)
         },
+        updateRegistration: (state, { payload: { name } }: PayloadAction<{ name: string }>) => {
+            state.registrationRequestId = undefined
+            state.name = name
+            state.mustSendRegistration = true
+            name && localStorage.setItem('sesame.name', name)
+        },
         registrationProcessWaitingForValidation: (state) => {
             state.waitingForValidation = true
             state.mustSendRegistration = false
@@ -65,4 +71,4 @@ export const app = createSlice({
     }
 })
 
-export const { startRegistrationProcess, cancelRegistrationProcess, registrationProcessWaitingForValidation, setAppStatus } = app.actions
+export const { startRegistrationProcess, updateRegistration, cancelRegistrationProcess, registrationProcessWaitingForValidation, setAppStatus } = app.actions
