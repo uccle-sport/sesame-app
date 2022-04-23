@@ -11,6 +11,7 @@ import Validate from "./Validate";
 import {store} from "./redux/store";
 import {Helmet} from "react-helmet";
 import NoConfig from "./NoConfig";
+import SesameHelmet from "./SesameHelmet";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -18,15 +19,7 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <Helmet>
-                <title>Sésame</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-                <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>
-                <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png"/>
-                <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png"/>
-                <link rel="manifest" href="./site.webmanifest"/>
-            </Helmet>
-
+            <SesameHelmet />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<App/>}/>

@@ -19,6 +19,35 @@ name && localStorage.setItem('sesame.name', name)
 phoneNumber && localStorage.setItem('sesame.phone.number', phoneNumber)
 localStorage.setItem('sesame.phone.uuid', phoneUuid)
 
+const manifestUrl = URL.createObjectURL(new Blob([JSON.stringify(
+    {
+        short_name: "Sésame",
+        name: "Sésame bike shed remote",
+        icons: [
+            {
+                src: "favicon.ico",
+                sizes: "32x32 16x16",
+                type: "image/x-icon"
+            },
+            {
+                src: "android-chrome-192x192.png",
+                type: "image/png",
+                sizes: "192x192"
+            },
+            {
+                src: "android-chrome-512x512.png",
+                type: "image/png",
+                sizes: "512x512"
+            }
+        ],
+        start_url: `/${deviceUuid}/${secret}`,
+        display: "standalone",
+        orientation: "portrait",
+        theme_color: "#000000",
+        background_color: "#ffffff"
+    }, null, ' ')], {type: 'application/json'}))
+
+
 export interface AppState {
     name: string
     phoneNumber: string
@@ -29,6 +58,7 @@ export interface AppState {
     waitingForValidation: boolean
     mustSendRegistration: boolean
     status: { open: boolean, closed: boolean, closing: boolean, opening: boolean }
+    manifestUrl: string
 }
 
 const initialState = {
@@ -38,7 +68,8 @@ const initialState = {
     secret,
     deviceUuid,
     waitingForValidation: false,
-    status: {open: false, closed: false, closing: false, opening: false}
+    status: {open: false, closed: false, closing: false, opening: false},
+    manifestUrl
 } as AppState
 
 export const app = createSlice({
