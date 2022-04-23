@@ -35,9 +35,9 @@ function App() {
 
     useEffect(() => {
         if (opening && dynProgress>0) {
-            setTimeout(() => setDynProgress(dynProgress-1), 600)
+            setTimeout(() => setDynProgress(dynProgress-1), 400)
         } else if (closing && dynProgress<100) {
-            setTimeout(() => setDynProgress(dynProgress+1), 600)
+            setTimeout(() => setDynProgress(dynProgress+1), 400)
         }
     }, [dynProgress])
 

@@ -34,7 +34,12 @@ function Settings() {
         setPhoneMissing(!isPhoneOk)
         if (isPhoneOk) {
             if (rights && !rights.confirmed) {
-                dispatch(startRegistrationProcess({processId: uuid(), name, phoneNumber: phone}))
+                //Normalise
+                const normalisedPhone = phone
+                    .replace(/[^+0-9]/g, '')
+                    .replace(/^04([0-9]{2})([0-9]{3})([0-9]{3})/, '+32 4$1 $2 $3')
+                    .replace(/^06([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})/, '+33 6 $1 $2 $3 $4')
+                dispatch(startRegistrationProcess({processId: uuid(), name, phoneNumber: normalisedPhone}))
             } else {
                 dispatch(updateRegistration({name}))
             }
@@ -80,7 +85,7 @@ function Settings() {
                     <div className="relative flex w-full flex-wrap items-stretch mb-3">
                         <input id="phone" name="phone" type="tel"
                                style={phoneMissing ? {borderColor: 'darkred', borderWidth: '2px'} : {}}
-                               readOnly={!!phoneNumber} placeholder="Phone number" value={phone}
+                               readOnly={!!phoneNumber && rights && rights.confirmed} placeholder="Phone number" value={phone}
                                onChange={(e) => setPhone(e.target.value)}
                                className="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border border-blueGray-300 outline-none focus:outline-none focus:ring w-full pr-10"/>
                         <span

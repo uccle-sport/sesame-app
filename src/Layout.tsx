@@ -16,7 +16,7 @@ function Layout(props: {children: JSX.Element}) {
         } else if (!phoneNumber || (rights && !rights.confirmed && !waitingForValidation)) {
             navigate('/settings')
         }
-    }, [phoneNumber, secret, deviceUuid] )
+    }, [phoneNumber, secret, deviceUuid, rights, waitingForValidation] )
 
   return (
 <div className="flex flex-col bg-white h-screen">

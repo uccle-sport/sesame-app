@@ -11,6 +11,35 @@ const MESSAGE_HOST = "https://msg-gw.icure.cloud"
 const PROCESS_ID = "91c91afa-565c-4773-bb9d-93b925bb3ee7"
 const UUID = 'a58afe0e-02dc-431b-8155-0351140099e4';
 
+export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch, force: boolean = false) => {
+    if (uuid && token && pid && (force || socketFingerPrint !== `${uuid}:${pid}:${token}`)) {
+        socketFingerPrint = `${uuid}:${pid}:${token}`
+        if (!!socket) { socket.disconnect() }
+        socket = window.location.href.includes('localhost') ? io('https://rus-bike.herokuapp.com', {
+            query: {
+                uuid,
+                pid,
+                token
+            }
+        }) : io({query: {uuid, pid, token}})
+        if (socket) {
+            socket.on('notify', (msg) => {
+                dispatch(setAppStatus(msg))
+            })
+            const thisSocket = socket
+            const refreshStatus = () => {
+                ping(token, uuid, pid).then((res) => {
+                    dispatch(setAppStatus(res))
+                })
+                if (thisSocket === socket) {
+                    setTimeout(() => refreshStatus(), 60000)
+                }
+            }
+            refreshStatus()
+        }
+    }
+}
+
 function getError(e: FetchBaseQueryError): FetchBaseQueryError & { message?: string } {
     const err = e as any
     return { status: err.status, originalStatus: err.originalStatus, error: err.error, message: err.message }
@@ -59,35 +88,6 @@ export const ping = (secret: string, deviceUuid: string, phoneUuid: string): Pro
             }
         })
     });
-}
-
-export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch, force: boolean = false) => {
-    if (uuid && token && pid && (force || socketFingerPrint !== `${uuid}:${pid}:${token}`)) {
-        socketFingerPrint = `${uuid}:${pid}:${token}`
-        if (!!socket) { socket.disconnect() }
-        socket = window.location.href.includes('localhost') ? io('http://localhost:5000', {
-            query: {
-                uuid,
-                pid,
-                token
-            }
-        }) : io({query: {uuid, pid, token}})
-        if (socket) {
-            socket.on('notify', (msg) => {
-                dispatch(setAppStatus(msg))
-            })
-            const thisSocket = socket
-            const refreshStatus = () => {
-                ping(token, uuid, pid).then((res) => {
-                    dispatch(setAppStatus(res))
-                })
-                if (thisSocket === socket) {
-                    setTimeout(() => refreshStatus(), 60000)
-                }
-            }
-            refreshStatus()
-        }
-    }
 }
 
 export const apiRtk = createApi({
