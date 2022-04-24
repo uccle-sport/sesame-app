@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useTransition} from 'react';
 import './App.css';
 import Layout from "./Layout";
 // @ts-ignore
@@ -6,8 +6,10 @@ import background from "./img/bg.jpeg";
 import {useCloseMutation, useOpenMutation, usePingQuery} from "./redux/query";
 import {useAppSelector} from "./redux/hooks";
 import {home} from "./icons"
+import {useTranslation} from "react-i18next";
 
 function App() {
+    const { t }: { t: (key: string) => string } = useTranslation()
     const pingData = useAppSelector((state) => state.app.status)
     const [ dynProgress, setDynProgress ] = useState(0)
     const { open, closed, closing, opening } = (pingData ?? { open: false, closed: false, closing: false, opening: false })
@@ -15,15 +17,15 @@ function App() {
     const [ closeDoor ] = useCloseMutation()
     const progress = closed ? '100%' : open ? '0' : `${dynProgress}%`
 
-    const message = open ? 'The bike shed is open' :
-        closed ? 'The bike shed is closed' :
-            opening ? 'The bike shed is opening' :
-                closing ? 'The bike shed is closing' :
-                    'The status of the bike shed is unknown'
+    const message = open ? t('Main.open') :
+        closed ? t('Main.closed') :
+            opening ? t('Main.opening') :
+                closing ? t('Main.closing') :
+                    t('Main.unknown')
 
-    const buttonLabel = open ? 'Close' :
-        closed ? 'Open' :
-            'Please wait'
+    const buttonLabel = open ? t('Main.closeShed') :
+        closed ? t('Main.openShed') :
+            t('Main.waiting')
 
     useEffect(() => {
         if (opening) {
@@ -49,7 +51,7 @@ function App() {
     return (
         <Layout>
             <div id="main" className="flex flex-col h-full justify-center bg-white">
-                <div className="w-full mt-4 flex-1 text-center bg" style={{backgroundImage: `url(${background})`, backgroundSize: "contain", backgroundRepeat: 'no-repeat', backgroundPosition: 'center bottom'}} ><span className="text-lg">Welcome to Sésame<br/>The bike shed remote control.</span>
+                <div className="w-full mt-4 flex-1 text-center bg" style={{backgroundImage: `url(${background})`, backgroundSize: "contain", backgroundRepeat: 'no-repeat', backgroundPosition: 'center bottom'}} ><span className="text-lg">{t('Main.welcome')}<br/>{t('Main.subtitle')}</span>
                 </div>
                 <div id="status" className="mx-auto grow-1 text-center mt-2">{message}</div>
                 <div className="relative pt-1 px-16 grow-1 py-4 my-2">
@@ -60,7 +62,7 @@ function App() {
                 <div className="mx-auto grow-1 mb-24">
                     <button id="button"
                             className={
-                        `flex flex-nowrap justify-center items-center w-48 text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 ${open || closed ? 'bg-pink-500 active:bg-pink-600 hover:shadow-lg' : 'bg-pink-200'}`}
+                        `flex flex-nowrap justify-center items-center text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 ${open || closed ? 'bg-pink-500 active:bg-pink-600 hover:shadow-lg' : 'bg-pink-200'}`}
                             type="button" disabled={!open && !closed} onClick={() => toggle()}>
 			<span className="mr-4 my-auto">{home()}</span>
                         <span id="button-label">{buttonLabel}</span>

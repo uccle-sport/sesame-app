@@ -3,8 +3,10 @@ import './App.css';
 import {useNavigate} from "react-router";
 import {useAppSelector} from "./redux/hooks";
 import {useRightsQuery} from "./redux/query";
+import {useTranslation} from "react-i18next";
 
 function Layout(props: {children: JSX.Element}) {
+    const { t }: { t: (key: string) => string } = useTranslation()
     const navigate = useNavigate()
 
     const { phoneNumber, secret, deviceUuid, waitingForValidation } = useAppSelector((state) => state.app)
@@ -24,16 +26,16 @@ function Layout(props: {children: JSX.Element}) {
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
             <div className="flex justify-between w-auto px-4">
                 <button
-                    className="text-md font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
+                    className="text-md min-w-fit font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase text-white"
                     onClick={() => navigate(`/${deviceUuid}/${secret}`)}>
-                    Sésame
+                    {t('Header.sesame')}
                 </button>
             </div>
             <div className="flex flex-grow items-center" id="example-navbar-warning">
                 <button
-                    className="text-md ml-auto flex items-center uppercase font-bold leading-snug text-white hover:opacity-75 active:opacity-50"
+                    className="text-md min-w-fit ml-auto flex items-center uppercase font-bold leading-snug text-white hover:opacity-75 active:opacity-50"
                     onClick={() => navigate('/settings')}>
-                    Settings
+                    {t('Header.settings')}
                 </button>
             </div>
         </div>

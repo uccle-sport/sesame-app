@@ -11,7 +11,25 @@ import Validate from "./Validate";
 import {store} from "./redux/store";
 import NoConfig from "./NoConfig";
 import SesameHelmet from "./SesameHelmet";
+import i18next from "i18next";
+import I18NextHttpBackend from "i18next-http-backend";
+import I18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
+import { initReactI18next } from 'react-i18next'
 
+i18next
+    .use(I18NextHttpBackend)
+    .use(I18nextBrowserLanguageDetector)
+    .use(initReactI18next)
+    .init({
+        lowerCaseLng: true,
+        supportedLngs: ['en', 'fr'],
+        lng: 'fr',
+        debug: true,
+        fallbackLng: 'fr',
+        interpolation: {
+            escapeValue: false, // not needed for react as it escapes by default
+        },
+    })
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );

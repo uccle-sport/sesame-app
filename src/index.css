@@ -35,6 +35,10 @@ code {
     monospace;
 }
 
+button {
+  min-width: 192px;
+}
+
 .spacer {
   flex-grow: 1;
 }
