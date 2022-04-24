@@ -9,7 +9,6 @@ import App from "./App";
 import Settings from "./Settings";
 import Validate from "./Validate";
 import {store} from "./redux/store";
-import {Helmet} from "react-helmet";
 import NoConfig from "./NoConfig";
 import SesameHelmet from "./SesameHelmet";
 

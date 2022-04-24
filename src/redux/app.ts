@@ -19,28 +19,44 @@ name && localStorage.setItem('sesame.name', name)
 phoneNumber && localStorage.setItem('sesame.phone.number', phoneNumber)
 localStorage.setItem('sesame.phone.uuid', phoneUuid)
 
+const root = window.location.href.replace(/(https?:\/\/.+?)\/.+/, '$1');
 const manifestUrl = URL.createObjectURL(new Blob([JSON.stringify(
     {
         short_name: "Sésame",
         name: "Sésame bike shed remote",
         icons: [
             {
-                src: "favicon.ico",
-                sizes: "32x32 16x16",
-                type: "image/x-icon"
-            },
-            {
-                src: "android-chrome-192x192.png",
+                src: `${root}/android-chrome-192x192.png`,
                 type: "image/png",
                 sizes: "192x192"
             },
             {
-                src: "android-chrome-512x512.png",
+                src: `${root}/android-chrome-512x512.png`,
                 type: "image/png",
                 sizes: "512x512"
+            },
+            {
+                src: `${root}/apple-touch-icon.png`,
+                type: "image/png",
+                sizes: "180x180"
+            },
+            {
+                src: `${root}/favicon.ico`,
+                sizes: "48x48",
+                type: "image/x-icon"
+            },
+            {
+                src: `${root}/favicon-16x16.png`,
+                sizes: "16x16",
+                type: "image/png",
+            },
+            {
+                src: `${root}/favicon-32x32.png`,
+                sizes: "32x32",
+                type: "image/png",
             }
         ],
-        start_url: `/${deviceUuid}/${secret}`,
+        start_url: `${root}/${deviceUuid}/${secret}`,
         display: "standalone",
         orientation: "portrait",
         theme_color: "#000000",

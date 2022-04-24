@@ -8565,6 +8565,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"o9n@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "o9n@npm:2.1.1"
+  checksum: 61d53b4ad843e4b0550a43109f46b3ca681ed18903107ae0586a02e004674829ce4e16ff90301671ab08cfdd7d928f68aa55c44ba2ed146390d9c06e24dc240a
+  languageName: node
+  linkType: hard
+
 "object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
@@ -10932,6 +10939,7 @@ __metadata:
     autoprefixer: ^10.4.4
     daisyui: ^2.14.1
     immutable: ^4.0.0
+    o9n: ^2.1.1
     postcss: ^8.4.12
     react: ^18.0.0
     react-dom: ^18.0.0

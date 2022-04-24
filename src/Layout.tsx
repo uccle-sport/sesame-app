@@ -19,7 +19,7 @@ function Layout(props: {children: JSX.Element}) {
     }, [phoneNumber, secret, deviceUuid, rights, waitingForValidation] )
 
   return (
-<div className="flex flex-col bg-white h-screen">
+<div className="flex flex-col bg-white h-full">
     <div className="flex flex-wrap items-center justify-between px-2 py-3 bg-primary">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
             <div className="flex justify-between w-auto px-4">

@@ -6,6 +6,7 @@
     "@types/react-helmet": "^6.1.5",
     "daisyui": "^2.14.1",
     "immutable": "^4.0.0",
+    "o9n": "^2.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-helmet": "^6.1.0",

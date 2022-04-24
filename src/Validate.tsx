@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {FormEvent, useEffect, useState} from 'react';
 import './App.css';
 import Layout from "./Layout";
 import { useNavigate } from "react-router";
@@ -17,7 +17,9 @@ function Validate() {
 
     const [ validate, { data: validation }] = useCompleteProcessMutation()
 
-    const submit = () => {
+    const submit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        e.stopPropagation()
         const isCodeOk = code.match(/[0-9]{6}/)
         setCodeIncorrect(!isCodeOk)
         if (isCodeOk) {
@@ -36,7 +38,7 @@ function Validate() {
           <div id="validation"
                className="bottom-0 left-0 w-screen flex flex-col h-full">
               <div className="px-9 mt-8 text-justify">Please enter the validation code you have received by SMS</div>
-              <form className="flex dlex-auto mt-8 px-8 flex-col w-full h-full">
+              <form className="flex dlex-auto mt-8 px-8 flex-col w-full h-full" onSubmit={(e) => submit(e)}>
                   <div className="relative flex w-full flex-wrap items-stretch mb-3">
                       <input id="code" name="code" type="text" autoComplete="one-time-code" pattern="[0-9]*"
                              style={codeIncorrect ? {borderColor: 'darkred', borderWidth: '2px'} : {}}
@@ -46,13 +48,13 @@ function Validate() {
                   </div>
                   <button id="button"
                           className="flex flex-nowrap mt-4 mb-1 mx-auto justify-center bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
-                          type="button" onClick={() => submit()}>
+                          type="submit">
                       <span className="mr-2 my-auto">{checkCircle()}</span>
                       <span className="pt-0.5" id="button-label">Submit</span>
                   </button>
                   <div className="spacer"/>
                   <button id="button"
-                          className="flex flex-nowrap mt-4 mb-8 mx-auto justify-center bg-secondary text-white font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                          className="flex flex-nowrap mt-4 mb-24 mx-auto justify-center bg-secondary text-white font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
                           type="button" onClick={() => navigate('/settings')}>
                       <span className="mr-2 my-auto">{arrowCircleLeft()}</span>
                       <span className="pt-0.5" id="button-label">I received no code</span>
