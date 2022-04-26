@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@media screen and (min-width: 320px) and (orientation: landscape) {
+@media screen and (min-width: 450px) and (orientation: landscape) {
   html {
     transform: rotate(-90deg);
     transform-origin: left top;
@@ -21,6 +21,7 @@
 div#root {
   height: 100vh;
 }
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

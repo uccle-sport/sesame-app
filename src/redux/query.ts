@@ -1,6 +1,6 @@
-import { io, Socket } from "socket.io-client";
-import { createApi } from '@reduxjs/toolkit/query/react';
-import { fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import {io, Socket} from "socket.io-client";
+import {createApi} from '@reduxjs/toolkit/query/react';
+import {fetchBaseQuery, FetchBaseQueryError} from "@reduxjs/toolkit/query";
 import {AppState, cancelRegistrationProcess, setAppStatus} from "./app";
 import {AppDispatch} from "./store";
 
@@ -24,18 +24,25 @@ export const connect = (uuid: string, token: string, pid: string, dispatch: AppD
         }) : io({query: {uuid, pid, token}})
         if (socket) {
             socket.on('notify', (msg) => {
+                console.warn("NOTIFY: ", msg)
                 dispatch(setAppStatus(msg))
             })
             const thisSocket = socket
-            const refreshStatus = () => {
-                ping(token, uuid, pid).then((res) => {
-                    dispatch(setAppStatus(res))
-                })
+            const refreshStatus = (expectedDateLimit: number, idx: number) => {
+                try {
+                    if (idx === 0 || +new Date() > expectedDateLimit) {
+                        ping(token, uuid, pid).then((res) => {
+                            dispatch(setAppStatus(res))
+                        })
+                    }
+                } catch(e) {
+                    //ignore
+                }
                 if (thisSocket === socket) {
-                    setTimeout(() => refreshStatus(), 60000)
+                    setTimeout(() => refreshStatus(+new Date() + 2000, (idx + 1) % 60), 1000)
                 }
             }
-            refreshStatus()
+            refreshStatus(0, 0)
         }
     }
 }

@@ -49,14 +49,14 @@ function Validate() {
                       <span className="z-10 h-full leading-snug absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">{key()}</span>
                   </div>
                   <button id="button"
-                          className="flex flex-nowrap mt-4 mb-1 mx-auto justify-center bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                          className="flex flex-nowrap mt-4 mb-1 mx-auto justify-center bg-pink-500 text-white active:bg-pink-900 font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-100"
                           type="submit">
                       <span className="mr-2 my-auto">{checkCircle()}</span>
                       <span className="pt-0.5" id="button-label">{t('Validate.submit')}</span>
                   </button>
                   <div className="spacer"/>
                   <button id="button"
-                          className="flex flex-nowrap mt-4 mb-24 mx-auto justify-center bg-secondary text-white font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+                          className="flex flex-nowrap mt-4 mb-24 mx-auto justify-center bg-secondary text-white font-bold uppercase text-sm px-3 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-100"
                           type="button" onClick={() => navigate('/settings')}>
                       <span className="mr-2 my-auto">{arrowCircleLeft()}</span>
                       <span className="pt-0.5" id="button-label">{t('Validate.no-code')}</span>

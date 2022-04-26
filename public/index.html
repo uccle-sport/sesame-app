@@ -20,16 +20,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      let de = document.documentElement;
-      if (de.requestFullscreen) { de.requestFullscreen(); }
-      else if (de.mozRequestFullScreen) { de.mozRequestFullScreen(); }
-      else if (de.webkitRequestFullscreen) { de.webkitRequestFullscreen(); }
-      else if (de.msRequestFullscreen) { de.msRequestFullscreen(); }
-      // (A2) THEN LOCK ORIENTATION
-      screen.orientation.lock('portrait');
-    });
-  </script>
   </body>
 </html>

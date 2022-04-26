@@ -16,7 +16,7 @@ export const store = configureStore({
     if (state.app.deviceUuid && state.app.secret && state.app.phoneUuid) {
       connect(state.app.deviceUuid, state.app.secret, state.app.phoneUuid, store.dispatch)
     }
-    return followUp  },logger),
+    return followUp  }),
 })
 
 const state = store.getState()
