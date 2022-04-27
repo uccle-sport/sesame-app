@@ -87,7 +87,7 @@ function App() {
                         <div id="progress" style={{width: (!pingData?'100%':progress)}} className={`${!pingData || temporising ?'indeterminate ':''}shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-500`}/>
                     </div>
                 </div>
-                <div className="relative z-50 mx-auto grow-1 mb-24">
+                <div className="relative z-50 mx-auto mb-48">
                     <button id="button"
                             className={
                         `flex flex-nowrap justify-center items-center text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-100 ${open || closed ? 'bg-pink-500 active:bg-pink-900 hover:shadow-lg' : 'bg-pink-200'}`}
