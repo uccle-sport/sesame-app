@@ -11,6 +11,31 @@ const MESSAGE_HOST = "https://msg-gw.icure.cloud"
 const PROCESS_ID = "91c91afa-565c-4773-bb9d-93b925bb3ee7"
 const UUID = 'a58afe0e-02dc-431b-8155-0351140099e4';
 
+
+let hidden: string | undefined
+let visibilityChange: string | undefined
+
+if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+    hidden = "hidden";
+    visibilityChange = "visibilitychange";
+} else { // @ts-ignore
+    if (typeof document.mozHidden !== "undefined") {
+        hidden = "mozHidden";
+        visibilityChange = "mozvisibilitychange";
+    } else { // @ts-ignore
+        if (typeof document.msHidden !== "undefined") {
+                hidden = "msHidden";
+                visibilityChange = "msvisibilitychange";
+            } else { // @ts-ignore
+            if (typeof document.webkitHidden !== "undefined") {
+                            hidden = "webkitHidden";
+                            visibilityChange = "webkitvisibilitychange";
+                        }
+        }
+    }
+}
+
+
 export const connect = (uuid: string, token: string, pid: string, dispatch: AppDispatch, force: boolean = false) => {
     if (uuid && token && pid && (force || socketFingerPrint !== `${uuid}:${pid}:${token}`)) {
         socketFingerPrint = `${uuid}:${pid}:${token}`
@@ -23,6 +48,12 @@ export const connect = (uuid: string, token: string, pid: string, dispatch: AppD
             }
         }) : io({query: {uuid, pid, token}})
         if (socket) {
+            document.addEventListener(visibilityChange, () => {
+                ping(token, uuid, pid).then((res) => {
+                    dispatch(setAppStatus(res))
+                })
+            }, false);
+
             socket.on('notify', (msg) => {
                 console.warn("NOTIFY: ", msg)
                 dispatch(setAppStatus(msg))
@@ -39,7 +70,7 @@ export const connect = (uuid: string, token: string, pid: string, dispatch: AppD
                     //ignore
                 }
                 if (thisSocket === socket) {
-                    setTimeout(() => refreshStatus(+new Date() + 2000, (idx + 1) % 60), 1000)
+                    setTimeout(() => refreshStatus(+new Date() + 2000, (idx + 1) % 10), 1000)
                 }
             }
             refreshStatus(0, 0)
@@ -81,7 +112,7 @@ export const ping = (secret: string, deviceUuid: string, phoneUuid: string): Pro
             console.log(JSON.stringify(resp, null, ' '));
             if (resp.status === 200) {
                 const r = resp.response
-                const ev = (r.events && r.events.length && r.events[r.events.length - 1] || undefined) as { date: string } | undefined
+                const ev = ((r.events && r.events.length && r.events[r.events.length - 1]) || undefined) as { date: string } | undefined
                 resolve({
                     connected: true,
                     lastEvent: +(ev?.date ?? 0),

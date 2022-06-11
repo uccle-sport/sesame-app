@@ -35,16 +35,14 @@ function App() {
             t('Main.waiting')
 
     useEffect(() => {
-        if (opening) {
+        if (opening && !temporising) {
             console.warn("38 -> false")
-            setTemporising(false)
             setDynProgress(99)
-        } else if (closing) {
+        } else if (closing && !temporising) {
             console.warn("42 -> false")
-            setTemporising(false)
             setDynProgress(1)
         }
-    }, [opening, closing])
+    }, [temporising, opening, closing])
 
     useEffect(() => {
         if (open || closed) {
@@ -65,13 +63,13 @@ function App() {
         if (open) {
             console.warn("65 -> true")
             setTemporising(true)
-            setTimeout(() => setTemporising(false), 20000)
+            setTimeout(() => setTemporising(false), 5000)
             closeDoor()
         }
         if (closed) {
             console.warn("70 -> true")
             setTemporising(true)
-            setTimeout(() => setTemporising(false), 20000)
+            setTimeout(() => setTemporising(false), 5000)
             openDoor()
         }
     }
@@ -84,14 +82,14 @@ function App() {
                 <div id="status" className="mx-auto grow-1 text-center mt-2">{message}</div>
                 <div className="relative z-50 relative pt-1 px-16 grow-1 py-4 my-2">
                     <div className="overflow-hidden h-5 mb-4 text-xs flex rounded-lg bg-pink-200">
-                        <div id="progress" style={{width: (!pingData?'100%':progress)}} className={`${!pingData || temporising ?'indeterminate ':''}shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-500`}/>
+                        <div id="progress" style={{width: (!pingData || temporising ?'100%':progress)}} className={`${!pingData || temporising ? 'indeterminate ':''}shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-500`}/>
                     </div>
                 </div>
                 <div className="relative z-50 mx-auto mb-48">
                     <button id="button"
                             className={
-                        `flex flex-nowrap justify-center items-center text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-100 ${open || closed ? 'bg-pink-500 active:bg-pink-900 hover:shadow-lg' : 'bg-pink-200'}`}
-                            type="button" disabled={!open && !closed && !temporising} onClick={() => toggle()}>
+                        `flex flex-nowrap justify-center items-center text-white font-bold uppercase text-sm px-6 py-3 rounded-full shadow outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-100 ${(!open && !closed) || temporising || opening || closing ? 'bg-pink-200' : 'bg-pink-500 active:bg-pink-900 hover:shadow-lg'}`}
+                            type="button" disabled={(!open && !closed) || temporising || opening || closing} onClick={() => toggle()}>
 			            <span className="mr-4 my-auto">{home()}</span>
                         <span id="button-label">{buttonLabel}</span>
                     </button>
